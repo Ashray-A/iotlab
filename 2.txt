@@ -1,0 +1,46 @@
+LDR LED
+int ldrPin = A0;  // LDR connected to analog pin A0
+int ledPin = 13;   // LED connected to pin 13
+int ldrValue = 0;
+int threshold = 500; // Adjust based on your light conditions
+
+void setup() {
+  pinMode(ledPin, OUTPUT);
+}
+
+void loop() {
+  ldrValue = analogRead(ldrPin); // Read LDR value (0 - 1023)
+
+  if (ldrValue < threshold) {    // If it's dark
+    digitalWrite(ledPin, HIGH);  // Turn LED ON
+  } else {                       // If it's bright
+    digitalWrite(ledPin, LOW);   // Turn LED OFF
+  }
+
+  delay(100); // Small delay for stability
+}
+
+
+
+
+
+Connect Arduino 5V to the top rail of the breadboard (or directly to one end of the LDR).
+
+Connect one leg of the LDR to 5V.
+
+Connect the other leg of the LDR to the A0 input (also to one end of the 10 kΩ resistor).
+
+In practice: 5V → LDR → junction (A0) → 10kΩ → GND.
+
+Connect the other end of the 10 kΩ resistor to GND.
+
+The junction between LDR and 10kΩ is the analog voltage the Arduino reads with analogRead(A0).
+
+LED: if using the built-in LED on D13, no hardware needed.
+If using an external LED:
+
+Arduino D13 → 220 Ω resistor → LED anode (long leg).
+
+LED cathode (short leg) → GND.
+
+Connect Arduino GND to the breadboard ground rail so the resistor and LED share common ground.

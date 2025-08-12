@@ -1,0 +1,50 @@
+ traffic signal
+
+int REDPIN = 13;  
+int YELLOWPIN = 12;  
+int GREENPIN = 11;  
+
+void setup() {  
+  pinMode(REDPIN, OUTPUT);  
+  pinMode(YELLOWPIN, OUTPUT);  
+  pinMode(GREENPIN, OUTPUT);  
+}  
+
+void loop() {  
+  //Turn on the red led, and turn off the yellow and green leds.  
+  digitalWrite(REDPIN, HIGH);  
+  digitalWrite(YELLOWPIN, LOW);  
+  digitalWrite(GREENPIN, LOW);  
+  delay(2000);  
+
+  //Turn on the yellow led, and turn off the red and green leds.  
+  digitalWrite(REDPIN, LOW);  
+  digitalWrite(YELLOWPIN, HIGH);  
+  digitalWrite(GREENPIN, LOW);  
+  delay(2000);  
+
+  //Turn on the green led, and turn off the red and yellow leds.  
+  digitalWrite(REDPIN, LOW);  
+  digitalWrite(YELLOWPIN, LOW);  
+  digitalWrite(GREENPIN, HIGH);  
+  delay(2000);  
+}
+
+
+
+
+Put the LED on the breadboard. Identify the legs: long = anode (+), short = cathode (−).
+
+Connect the anode (long leg) of the red LED to Arduino digital pin 13 through a 220 Ω resistor.
+
+(Pin 13) → (220 Ω resistor) → (LED anode)
+
+Connect the cathode (short leg) of the red LED to GND on the Arduino.
+
+Repeat the same for the other LEDs:
+
+Yellow LED: (Pin 12) → 220 Ω → LED anode ; LED cathode → GND
+
+Green LED: (Pin 11) → 220 Ω → LED anode ; LED cathode → GND
+
+Connect the Arduino GND pin to the breadboard ground rail if you use the rail for all cathodes.

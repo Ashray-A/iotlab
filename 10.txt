@@ -1,0 +1,18 @@
+pip install paho-mqtt
+import paho.mqtt.client as mqtt
+import time
+
+broker = "broker.hivemq.com"   # Public broker
+port = 1883
+topic = "test/topic"
+
+client = mqtt.Client()
+
+print("Connecting to broker...")
+client.connect(broker, port, 60)
+
+while True:
+    message = "Hello MQTT from Python!"
+    client.publish(topic, message)
+    print(f"Published: {message}")
+    time.sleep(2)

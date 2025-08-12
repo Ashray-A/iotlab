@@ -1,0 +1,39 @@
+#include <SoftwareSerial.h>
+
+// RX = pin 2, TX = pin 3
+SoftwareSerial sim900(2, 3);
+
+void setup() {
+  sim900.begin(9600);
+  Serial.begin(9600);
+  delay(1000);
+  Serial.println("Initializing SIM900...");
+
+  sendSMS();
+}
+
+void loop() {
+  // Leave empty
+}
+
+void sendSMS() {
+  sim900.println("AT");               // Attention command
+  delay(1000);
+  sim900.println("AT+CMGF=1");        // Set SMS text mode
+  delay(1000);
+  sim900.println("AT+CMGS=\"+91XXXXXXXXXX\"");  // Replace with number
+  delay(1000);
+  sim900.print("Hello from SIM900 via Arduino!");
+  delay(1000);
+  sim900.write(26); // CTRL+Z
+  delay(2000);
+}
+
+
+
+Arduino Uno       SIM900 GSM Module
+-----------              -----------------e
+Pin 2 (RX)   <-------> TXD
+Pin 3 (TX)   <-------> RXD
+GND          -------- GND
+external adapter---->powersupply to GSM Modul

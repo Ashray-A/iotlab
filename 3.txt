@@ -1,0 +1,33 @@
+const int buttonPin = 2;
+const int ledPin = 13;
+
+int ledState = LOW;
+
+void setup() {
+  pinMode(buttonPin, INPUT_PULLUP); // Button connected between pin and GND
+  pinMode(ledPin, OUTPUT);
+}
+
+void loop() {
+  if (digitalRead(buttonPin) == LOW) { // Button pressed
+    ledState = !ledState;              // Toggle LED state
+    digitalWrite(ledPin, ledState);
+    delay(200); // Simple debounce
+  }
+}
+
+
+
+
+Button: connect one leg of the pushbutton to digital pin 2.
+
+Connect the opposite leg (the leg diagonally across the button) to GND on the Arduino.
+
+With INPUT_PULLUP enabled the pin is normally HIGH; pressing the button connects it to GND and reads LOW.
+
+LED: if using the built-in LED on D13, no wiring required.
+If using an external LED:
+
+Arduino D13 → 220 Ω resistor → LED anode (long leg).
+
+LED cathode (short leg) → GND.

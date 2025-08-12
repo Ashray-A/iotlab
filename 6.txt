@@ -1,0 +1,34 @@
+#include <Stepper.h>
+
+const int stepsPerRevolution = 2048; // Depends on your motor (28BYJ-48 uses 2048)
+
+Stepper myStepper(stepsPerRevolution, 9, 11, 10, 12); // Pins IN1, IN3, IN2, IN4
+
+void setup() {
+  myStepper.setSpeed(60); // Speed in RPM
+}
+
+void loop() {
+  myStepper.step(stepsPerRevolution); // Rotate one full turn
+}
+
+
+
+//diag
+[Stepper Controller]-------[Arduino]
+IN1------------------------D9
+IN2------------------------D10
+IN3------------------------D11
+IN4------------------------D12
+
+(4 OTHER PINS IN CONTROLLER)---[2 FROM ADAPTOR POWERSUPPLY HOLD POSITIVE TO ADAPTOR PIN'S HOLE AND NEGATIVE TO ABV PIN METAL OF ADAPTOR]-----[OTHER TWO PINS SHORT WITH EACH OTHER]
+
+Final Wiring Table
+ULN2003 Driver Pin	Connects To
+IN1	Arduino Pin 9
+IN2	Arduino Pin 10
+IN3	Arduino Pin 11
+IN4	Arduino Pin 12
+VCC	Arduino 5V
+GND	Arduino GND
+Motor Connector	28BYJ-48 Motor
