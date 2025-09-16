@@ -11,30 +11,14 @@ void loop() {
     if (letter == '1') {
       digitalWrite(3, HIGH);
       Serial.println("The LED is ON");
-    } 
+    }
     else if (letter == '0') {
       digitalWrite(3, LOW);
       Serial.println("The LED is OFF");
-    } 
+    }
     else {
       Serial.println("Invalid Input");
     }
+    delay(200);
   }
 }
-
-
-
-
-Arduino Pin 3 → LED
-
-Pin 3 → Resistor (220 Ω to 330 Ω) → LED Anode (+)
-
-LED Cathode (-) → GND on Arduino
-
-This resistor prevents too much current from damaging the LED.
-
-Arduino to PC via USB cable
-
-Powers the Arduino.
-
-Sends/receives serial data between Arduino and your computer’s Serial Monitor.
