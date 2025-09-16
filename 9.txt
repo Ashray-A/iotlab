@@ -15,7 +15,7 @@ void setup() {
   delay(1000);
   sim900.println("AT+CSCS=\"GSM\""); 
   delay(1000);
-  sim900.println("AT+CMGS=\"+919164499334\""); 
+  sim900.println("AT+CMGS=\"+91XXXXXXXXXX\""); 
   delay(1000);
 
   sim900.print("Hi Ma'am! How are you?"); 
@@ -29,3 +29,4 @@ void setup() {
 
 void loop() {
 }
+
