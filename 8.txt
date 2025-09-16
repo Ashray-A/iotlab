@@ -22,19 +22,17 @@ void setup() {
 
 void loop() {
   if (Serial.available()) {
-    dateTime = Serial.readStringUntil('\n');  // Read incoming date/time from Python
+    dateTime = Serial.readStringUntil('\n'); 
 
-    // Display Date and Time
     lcd.clear();
     lcd.setCursor(0, 0);
-    lcd.print(dateTime.substring(0, 10));  // dd-mm-yyyy
+    lcd.print(dateTime.substring(0, 10));
     lcd.setCursor(0, 1);
-    lcd.print(dateTime.substring(11));     // HH:MM:SS
+    lcd.print(dateTime.substring(11));     
 
-    delay(2000);  // Display time for 2 seconds
+    delay(2000);
 
-    // Read DHT11 sensor values
-    float temperature = dht.readTemperature();  // °C
+    float temperature = dht.readTemperature();  
     float humidity = dht.readHumidity();
 
     lcd.clear();
@@ -49,6 +47,7 @@ void loop() {
     lcd.print(isnan(humidity) ? "N/A" : String(humidity, 0));
     lcd.print("%");
 
-    delay(3000);  // Display temp/humidity for 3 seconds
+    delay(3000);  
   }
 }
+
