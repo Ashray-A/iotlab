@@ -19,3 +19,16 @@ void loop() {
 
   delay(100); 
 }
+
+
+
+void setup() {
+  pinMode(A0, INPUT);  // LDR pin
+  pinMode(9, OUTPUT);  // LED pin (PWM)
+}
+
+void loop() {
+  analogWrite(9, map(analogRead(A0), 0, 1023, 0, 255));
+  delay(100);
+}
+
