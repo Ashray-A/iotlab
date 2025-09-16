@@ -1,4 +1,7 @@
-//2. traffic signal
+TRAFIC LIGHT
+3 LED's
+3 RESISTORS
+
 int REDPIN = 13;  
 int YELLOWPIN = 12;  
 int GREENPIN = 11;  
@@ -29,87 +32,110 @@ void loop() {
   delay(2000);  
 }
 
-//diag
 
-Arduino Uno (Digital Pins) → LED (with resistor ~220Ω) → GND
-
-	Pin 13 ──[220Ω]──►|(+LED-)── GND  (Red LED)
-	Pin 12 ──[220Ω]──►|(+LED-)── GND  (Yellow LED)
-	Pin 11 ──[220Ω]──►|(+LED-)── GND  (Green LED)
-
----------------------------------------------------------------------------------------------------------------------------------+
-
-
-//3. LDR LED
-int ldrPin = A0;  // LDR connected to analog pin A0
-int ledPin = 13;   // LED connected to pin 13
-int ldrValue = 0;
-int threshold = 500; // Adjust based on your light conditions
-
+LDR VARYING LIGHT
+COMPONENTS
+1 led
+1 lightresistor
+1 220ohm resistor
+1 10 kiloohm resistor
+1arduino uno
+   
 void setup() {
-  pinMode(ledPin, OUTPUT);
+  pinMode(A0, INPUT);  // LDR pin
+  pinMode(9, OUTPUT);  // LED pin (PWM)
 }
 
 void loop() {
-  ldrValue = analogRead(ldrPin); // Read LDR value (0 - 1023)
-
-  if (ldrValue < threshold) {    // If it's dark
-    digitalWrite(ledPin, HIGH);  // Turn LED ON
-  } else {                       // If it's bright
-    digitalWrite(ledPin, LOW);   // Turn LED OFF
-  }
-
-  delay(100); // Small delay for stability
+  analogWrite(9, map(analogRead(A0), 0, 1023, 0, 255));
+  delay(100);
 }
-//diag
-(+5V)-----(LDR)----|
-			     |------[10kΩ resistor]-----GND
-			     |
-			   A0
 
-//4. LED pushbutton toggle
-const int buttonPin = 2;
-const int ledPin = 13;
+--->Raw LDR (textbook 2-wire)
 
-int ledState = LOW;
+5V → LDR leg 1
+
+LDR leg 2 → A0 (also to one end of 10kΩ resistor)
+
+Other end of 10kΩ → GND
+
+LDR module (4-pin board)
+
+5V → VCC on module
+
+GND → GND on module
+
+A0 → AO on module
+
+(optional) D2 → DO on module (if you want digital on/off)
+
+---->LED (external)
+
+D9 → 220Ω resistor → LED anode (long leg)
+
+LED cathode (short leg) → GND
+
+
+Ground/common
+
+Connect Arduino GND to the breadboard ground rail so module/LDR and LED share the same GND.
+
+
+SERIAL MONITOR
+1 LED
+1 220 OHM RESISTOR
 
 void setup() {
-  pinMode(buttonPin, INPUT_PULLUP); // Button connected between pin and GND
-  pinMode(ledPin, OUTPUT);
+  pinMode(13, OUTPUT);
+  digitalWrite(13, LOW);
+  Serial.begin(9600);
 }
 
 void loop() {
-  if (digitalRead(buttonPin) == LOW) { // Button pressed
-    ledState = !ledState;              // Toggle LED state
-    digitalWrite(ledPin, ledState);
-    delay(200); // Simple debounce
-  }
-}
-//diag		   |-----------------|
-         GND -------|      		|
-                                     |		|
-                                [Push Button]
-                                     |		|
- Pin 2 (buttonPin) -------|
+  if (Serial.available() > 0) {
+    char letter = Serial.read();
 
+    if (letter == '1') {
+      digitalWrite(13, HIGH);
+      Serial.println("The LED is ON");
+ 
+    } 
+    else if (letter == '0') {
+      digitalWrite(13, LOW);
+      Serial.println("The LED is OFF");
 
-//5. Serial i/o
-void setup() {
-  Serial.begin(9600); // Start serial communication at 9600 baud
-  Serial.println("Type something and press Enter:");
-}
+    }
+    else if (letter == '\n' || letter == '\r') {
+      // ignore newlines
+    }
+    else {
+      Serial.println("Invalid Input");
+    }
 
-void loop() {
-  if (Serial.available() > 0) {       // If data is received
-    String data = Serial.readString(); // Read the incoming string
-    Serial.print("You sent: ");       // Respond back
-    Serial.println(data);
   }
 }
 
----------------------------------------------------------------------------------------------------------------------------------+
+--->LED
 
-//6. Turn on led based on dht temp sensor
+Pin 3 → 220Ω resistor → LED anode (long leg)
+
+LED cathode (short leg) → GND
+
+-->Serial Monitor settings
+
+Open Serial Monitor in Arduino IDE
+
+Set baud rate: 9600 (to match Serial.begin(9600))
+
+
+
+
+DHT TEMP HUM
+1 DHT11
+1 LED
+1 220ohm RESISTOR
+
+Turn on led based on dht temp sensor
 #include <DHT.h>
 
 // Define DHT Sensor Type and Pin
@@ -162,42 +188,71 @@ void loop() {
     Serial.println("Temperature normal. LED is OFF.");
   }
 }
-//diag
-DHT Sensor:
-[5V]--------------------------------[5V]
-[GND]--------------------------[GND]
-[D2(arduino)]---[data_pin_of_sensor]
-
----------------------------------------------------------------------------------------------------------------------------------+
 
 
-//7. Stepper motor
+---->DHT11 sensor (3-pin)
+
+VCC → 5V on Arduino
+
+DATA → Digital pin 2 (DHTPIN)
+
+GND → GND on Arduino
+
+
+--->LED (external)
+
+D13 → 220Ω resistor → LED anode (long leg)
+
+LED cathode (short leg) → GND
+
+How to install in Arduino IDE
+- Open: Sketch → Include Library → Manage Libraries…
+- Search: DHT sensor library
+- Install: The one by Adafruit (author: Adafruit, license: MIT)
+- Also install dependency: Adafruit Unified Sensor (the library manager will usually prompt you)
+
+STEPPER MOTOR
+1 StepperMOTOR 28BYJ-48
+1 ULN2003 driver board
+
 #include <Stepper.h>
-
-const int stepsPerRevolution = 2048; // Depends on your motor (28BYJ-48 uses 2048)
-
-Stepper myStepper(stepsPerRevolution, 9, 11, 10, 12); // Pins IN1, IN3, IN2, IN4
-
+const int stepsPerRevolution = 2048;
+Stepper myStepper(stepsPerRevolution, 9, 10, 11, 12); // IN1, IN2, IN3, IN4
 void setup() {
-  myStepper.setSpeed(60); // Speed in RPM
+  myStepper.setSpeed(60);
 }
-
 void loop() {
-  myStepper.step(stepsPerRevolution); // Rotate one full turn
+  myStepper.step(stepsPerRevolution); // one full turn
+  delay(500);                         // optional pause
 }
-//diag
-[Stepper Controller]-------[Arduino]
-IN1------------------------D9
-IN2------------------------D10
-IN3------------------------D11
-IN4------------------------D12
 
-(4 OTHER PINS IN CONTROLLER)---[2 FROM ADAPTOR POWERSUPPLY HOLD POSITIVE TO ADAPTOR PIN'S HOLE AND NEGATIVE TO ABV PIN METAL OF ADAPTOR]-----[OTHER TWO PINS SHORT WITH EACH OTHER]
+--->ULN2003 driver board → Arduino
 
----------------------------------------------------------------------------------------------------------------------------------+
+IN1 → D9
 
+IN2 → D10
 
-//8. ultrasonic sensor
+IN3 → D11
+
+IN4 → D12
+
+--->Power & motor
+
+VCC on ULN2003 → 5V on Arduino (or to external 5V supply + if using external power)
+
+GND on ULN2003 → GND on Arduino (and if using external supply, connect external GND to Arduino GND)
+
+Motor connector → 28BYJ-48 stepper motor cable (fits the board)
+
+--->Optional external adapter (if used)
+
+Adapter + (positive) → VCC on ULN2003
+
+Adapter – (negative) → GND on ULN2003 and Arduino GND (tie all grounds)
+
+ULTRASONIC
+1 HC-SR04 ULTRASONIC SENSOR
+1 BUZZER
 
 int trigPin = 9, echoPin = 8, buzzerPin = 7;
 
@@ -222,72 +277,35 @@ void loop() {
 
   delay(200);
 }
-//diag
-[9]  --- Trig  ---      sensor  |
-[8]  --- Echo  ---    sensor  |
 
- [7]      ---   +ve(Buzzer) 
- GND  --- GND(Buzzer) 
-                             
-5V      --- VCC(sensor) 
-GND  --- GND(sensor)
+Bullet-point wiring (simple)
 
----------------------------------------------------------------------------------------------------------------------------------+
+-->Ultrasonic sensor (HC-SR04 style)
 
-//9. LCD temp display
-#include <Wire.h>
-#include <LiquidCrystal_I2C.h>
-#include <DHT.h>
+VCC → 5V on Arduino
 
-#define DHTPIN 2
-#define DHTTYPE DHT11
+GND → GND on Arduino
 
-DHT dht(DHTPIN, DHTTYPE);
+Trig → D9 (your trigPin)
 
-// Address 0x27 or 0x3F depending on your LCD module
-LiquidCrystal_I2C lcd(0x27, 16, 2);   //16x2 is display size
+Echo → D8 (your echoPin)
 
-void setup() {
-  lcd.init();         // Use this instead of lcd.begin()
-  lcd.backlight();    // Turn on LCD backlight
-  dht.begin();
-}
+--->Buzzer
 
-void loop() {
-  float temp = dht.readTemperature();
-  float hum = dht.readHumidity();
+Buzzer + → D7 (your buzzerPin)
 
-  lcd.clear();
-  if (isnan(temp) || isnan(hum)) {
-    lcd.setCursor(0, 0);
-    lcd.print("DHT Error");
-  } else {
-    lcd.setCursor(0, 0);
-    lcd.print("Temp: ");
-    lcd.print(temp);
-    lcd.print("C");
+If passive: prefer using tone(7, frequency) instead of digitalWrite.
 
-    lcd.setCursor(0, 1);
-    lcd.print("Hum: ");
-    lcd.print(hum);
-    lcd.print("%");
-  }
+If current > ~20–30mA, use transistor driver: Arduino pin → base resistor → NPN transistor; buzzer + → external 5V; transistor emitter → GND; add diode if inductive.
 
-  delay(2000);
-}
+Buzzer - → GND on Arduino
 
-//diag
-Arduino Uno    DHT11     I2C LCD
------------           ------          -------
-5V  ----------->  VCC   ------- VCC
-GND --------->  GND   ------- GND
-D2  ----------->  DATA
-A4  ----------------------------> SDA
-A5  ----------------------------> SCL
+--->Common ground
 
----------------------------------------------------------------------------------------------------------------------------------+
+Connect Arduino GND, sensor GND, and buzzer GND together.
 
-//10. SIM
+
+SIM
 #include <SoftwareSerial.h>
 
 // RX = pin 2, TX = pin 3
@@ -318,7 +336,8 @@ void sendSMS() {
   sim900.write(26); // CTRL+Z
   delay(2000);
 }
-//diag
+
+
 
 Arduino Uno       SIM900 GSM Module
 -----------              -----------------e
@@ -327,23 +346,38 @@ Pin 3 (TX)   <-------> RXD
 GND          -------- GND
 external adapter---->powersupply to GSM Modul
 
----------------------------------------------------------------------------------------------------------------------------------+
-//12. MQTT
-pip install paho-mqtt
+MQTT
+# combined.py
 import paho.mqtt.client as mqtt
 import time
 
-broker = "broker.hivemq.com"   # Public broker
-port = 1883
+broker = "broker.hivemq.com"
 topic = "test/topic"
 
-client = mqtt.Client()
+def on_connect(client, userdata, flags, rc):
+    print("Connected", rc)
+    client.subscribe(topic)
 
-print("Connecting to broker...")
-client.connect(broker, port, 60)
+def on_message(client, userdata, msg):
+    print("Received:", msg.payload.decode())
 
-while True:
-    message = "Hello MQTT from Python!"
-    client.publish(topic, message)
-    print(f"Published: {message}")
-    time.sleep(2)
+client = mqtt.Client(client_id="combined-client-001")  # make id unique
+client.on_connect = on_connect
+client.on_message = on_message
+
+client.connect(broker, 1883, 60)
+client.loop_start()  # run network loop in background
+
+try:
+    while True:
+        client.publish(topic, "Hello from combined")
+        print("Published")
+        time.sleep(2)
+except KeyboardInterrupt:
+    pass
+finally:
+    client.loop_stop()
+    client.disconnect()
+
+
+
