@@ -1,0 +1,38 @@
+1 StepperMOTOR 28BYJ-48
+1 ULN2003 driver board
+
+#include <Stepper.h>
+const int stepsPerRevolution = 2048;
+Stepper myStepper(stepsPerRevolution, 9, 10, 11, 12); // IN1, IN2, IN3, IN4
+void setup() {
+  myStepper.setSpeed(60);
+}
+void loop() {
+  myStepper.step(stepsPerRevolution); // one full turn
+  delay(500);                         // optional pause
+}
+
+--->ULN2003 driver board → Arduino
+
+IN1 → D9
+
+IN2 → D10
+
+IN3 → D11
+
+IN4 → D12
+
+--->Power & motor
+
+VCC on ULN2003 → 5V on Arduino (or to external 5V supply + if using external power)
+
+GND on ULN2003 → GND on Arduino (and if using external supply, connect external GND to Arduino GND)
+
+Motor connector → 28BYJ-48 stepper motor cable (fits the board)
+
+--->Optional external adapter (if used)
+
+Adapter + (positive) → VCC on ULN2003
+
+Adapter – (negative) → GND on ULN2003 and Arduino GND (tie all grounds)
+

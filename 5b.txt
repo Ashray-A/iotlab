@@ -1,0 +1,44 @@
+1 LED
+1 220 OHM RESISTOR
+
+void setup() {
+  pinMode(13, OUTPUT);
+  digitalWrite(13, LOW);
+  Serial.begin(9600);
+}
+
+void loop() {
+  if (Serial.available() > 0) {
+    char letter = Serial.read();
+
+    if (letter == '1') {
+      digitalWrite(13, HIGH);
+      Serial.println("The LED is ON");
+ 
+    } 
+    else if (letter == '0') {
+      digitalWrite(13, LOW);
+      Serial.println("The LED is OFF");
+
+    }
+    else if (letter == '\n' || letter == '\r') {
+      // ignore newlines
+    }
+    else {
+      Serial.println("Invalid Input");
+    }
+
+  }
+}
+
+--->LED
+
+Pin 3 → 220Ω resistor → LED anode (long leg)
+
+LED cathode (short leg) → GND
+
+-->Serial Monitor settings
+
+Open Serial Monitor in Arduino IDE
+
+Set baud rate: 9600 (to match Serial.begin(9600))

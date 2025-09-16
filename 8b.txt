@@ -1,0 +1,52 @@
+1 HC-SR04 ULTRASONIC SENSOR
+1 BUZZER
+
+int trigPin = 9, echoPin = 8, buzzerPin = 7;
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+  pinMode(buzzerPin, OUTPUT);
+}
+
+void loop() {
+  digitalWrite(trigPin, LOW); delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH); delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+
+  float distance = pulseIn(echoPin, HIGH) * 0.0343 / 2; // cm
+
+  Serial.print("Distance: ");
+  Serial.println(distance);
+
+  digitalWrite(buzzerPin, (distance < 10) ? HIGH : LOW);
+
+  delay(200);
+}
+
+Bullet-point wiring (simple)
+
+-->Ultrasonic sensor (HC-SR04 style)
+
+VCC → 5V on Arduino
+
+GND → GND on Arduino
+
+Trig → D9 (your trigPin)
+
+Echo → D8 (your echoPin)
+
+--->Buzzer
+
+Buzzer + → D7 (your buzzerPin)
+
+If passive: prefer using tone(7, frequency) instead of digitalWrite.
+
+If current > ~20–30mA, use transistor driver: Arduino pin → base resistor → NPN transistor; buzzer + → external 5V; transistor emitter → GND; add diode if inductive.
+
+Buzzer - → GND on Arduino
+
+--->Common ground
+
+Connect Arduino GND, sensor GND, and buzzer GND together.

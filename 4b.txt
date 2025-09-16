@@ -1,0 +1,34 @@
+1 LED
+1 220 ohm RESISTOR
+1 BUTTON SWITCH
+
+
+const int buttonPin = 2;
+const int ledPin = 13;
+
+int ledState = LOW;
+
+void setup() {
+  pinMode(buttonPin, INPUT_PULLUP); // Button connected between pin and GND
+  pinMode(ledPin, OUTPUT);
+}
+
+void loop() {
+  if (digitalRead(buttonPin) == LOW) { // Button pressed
+    ledState = !ledState;              // Toggle LED state
+    digitalWrite(ledPin, ledState);
+    delay(200); // Simple debounce
+  }
+}
+
+--->Button (momentary switch)
+
+Pin 2 → one leg of button
+
+GND → opposite diagonal leg of button
+
+--->LED (if using external)
+
+Pin 13 → 220Ω resistor → LED anode (long leg)
+
+LED cathode (short leg) → GND

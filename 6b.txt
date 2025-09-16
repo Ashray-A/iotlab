@@ -1,0 +1,80 @@
+1 DHT11
+1 LED
+1 220ohm RESISTOR
+
+Turn on led based on dht temp sensor
+#include <DHT.h>
+
+// Define DHT Sensor Type and Pin
+#define DHTPIN 2        // Pin where the DHT sensor is connected
+#define DHTTYPE DHT11   // Change to DHT22 if using that model
+
+DHT dht(DHTPIN, DHTTYPE);
+
+// Define the output pin for LED
+#define LED_PIN 13
+
+// Set temperature threshold in Celsius
+#define TEMP_THRESHOLD 30.0
+
+void setup() {
+  Serial.begin(9600);
+  dht.begin();
+
+  // Initialize LED output pin
+  pinMode(LED_PIN, OUTPUT);
+  digitalWrite(LED_PIN, LOW);  // Ensure it's OFF initially
+}
+
+void loop() {
+  delay(2000);  // Wait between readings
+
+  // Read temperature as Celsius
+  float temperature = dht.readTemperature();
+  float humidity = dht.readHumidity();
+
+  // Check if any reads failed
+  if (isnan(temperature) || isnan(humidity)) {
+    Serial.println("Failed to read from DHT sensor!");
+    return;
+  }
+
+  // Print the readings
+  Serial.print("Temperature: ");
+  Serial.print(temperature);
+  Serial.print(" °C\tHumidity: ");
+  Serial.print(humidity);
+  Serial.println(" %");
+
+  // Check if it's too hot
+  if (temperature > TEMP_THRESHOLD) {
+    digitalWrite(LED_PIN, HIGH);  // Turn ON LED
+    Serial.println("Too hot! LED is ON.");
+  } else {
+    digitalWrite(LED_PIN, LOW);   // Turn OFF LED
+    Serial.println("Temperature normal. LED is OFF.");
+  }
+}
+
+
+---->DHT11 sensor (3-pin)
+
+VCC → 5V on Arduino
+
+DATA → Digital pin 2 (DHTPIN)
+
+GND → GND on Arduino
+
+
+--->LED (external)
+
+D13 → 220Ω resistor → LED anode (long leg)
+
+LED cathode (short leg) → GND
+
+How to install in Arduino IDE
+- Open: Sketch → Include Library → Manage Libraries…
+- Search: DHT sensor library
+- Install: The one by Adafruit (author: Adafruit, license: MIT)
+- Also install dependency: Adafruit Unified Sensor (the library manager will usually prompt you)
+
