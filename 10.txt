@@ -1,18 +1,32 @@
-pip install paho-mqtt
+#pub
 import paho.mqtt.client as mqtt
+from random import randrange
 import time
 
-broker = "broker.hivemq.com"   # Public broker
-port = 1883
-topic = "test/topic"
-
-client = mqtt.Client()
-
-print("Connecting to broker...")
-client.connect(broker, port, 60)
+mqtt_broker = "broker.hivemq.com"
+client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION1, "number-out")
+client.connect(mqtt_broker)
 
 while True:
-    message = "Hello MQTT from Python!"
-    client.publish(topic, message)
-    print(f"Published: {message}")
-    time.sleep(2)
+    num = randrange(1, 11)
+    client.publish("random number", num) 
+    print(f"The number {num} is published as random number")
+    time.sleep(1)
+
+
+#sub
+import paho.mqtt.client as mqtt
+
+def on_connect(client, userdata, flags, rc):
+    print(f"Connected with result code {rc}")
+    client.subscribe("random number")  # subscribe to topic
+
+def on_message(client, userdata, msg):
+    print(f"Received message: {msg.payload.decode()} on topic: {msg.topic}")
+
+client = mqtt.Client()
+client.on_connect = on_connect
+client.on_message = on_message
+
+client.connect("broker.hivemq.com", 1883, 60)
+client.loop_forever()
